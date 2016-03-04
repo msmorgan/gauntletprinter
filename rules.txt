@@ -1,0 +1,121 @@
+﻿—///-
+−///-
+•///&#9679;
+‘///'
+less than or equal to///<=
+less than///<
+greater than or equal to///>=
+greater than///>
+\bplus\b///+
+((is|are( each)?) )?equal to///=
+can't be 0///!= 0
+\n///; 
+enters? the battlefield///ETB
+graveyard///GY
+mana pool///MP
+counters on it///counters
+\+1\/\+1 counters?///{+1/+1}
+-1\/-1 counters?///{-1/-1}
+charge counters?///{charge}
+\(.*?\)///
+opponent///opp
+damage///dmg
+target///tgt
+converted mana cost///CMC
+end of turn///EOT
+\bone\b///1
+\btwo\b///2
+\bthree\b///3
+\bfour\b///4
+\bfive\b///5
+\bsix\b///6
+\bseven\b///7
+\beight\b///8
+\bnine\b///9
+\bten\b///10
+\beleven\b///11
+\btwelve\b///12
+\bthirteen\b///13
+\bfourteen\b///14
+\bfiveteen\b///15
+\bsixteen\b///16
+\bseventeen\b///17
+\beighteen\b///18
+\bnineteen\b///19
+\btwenty\b///20
+first///1st
+first///1st
+second///2nd
+third///3rd
+fourth///4th
+\btimes\b///&#215;
+his or her///his
+he or she///he
+him or her///him
+(1 )?mana of any color///{any}
+draw a card, then discard a card///loot
+may draw a card. If you do, discard a card///may loot
+sacrificed creature///victim
+sacrifice(d?)///sac$1
+draw a card///draw 1
+discard(s?) a card///discard$1 1
+countered by spells or abilities///countered
+Activate this ability only any time you could cast a sorcery.///Sorcery speed.
+Activate this ability///Activate this
+shuffles his library///shuffles
+shuffle your library///shuffle
+search (a|your) library///tutor
+search his library///tutor
+At the beginning of your upkeep///At your upkeep
+at the beginning of your upkeep///at your upkeep
+At the beginning of each upkeep///At each upkeep
+at the beginning of each upkeep///at each upkeep
+At the beginning of each player's upkeep///At each upkeep
+at the beginning of each player's upkeep///at each upkeep
+upkeep///UPK
+((?:non)?(?:creature|instant|sorcery|enchantment|artifact|planeswalker|land)) (?:card|spell)(s?)///$1$2
+that card///it
+on(to)? the battlefield///in$1 play
+leaves the battlefield///leaves play
+token///tkn
+As an additional cost to cast ~///As an additional cost
+power and toughness///P/T
+\bpower\b///P
+\btoughness\b///T
+\s+;///;
+^;///
+Soulbond; As long as ~ is paired with another creature, (?:both|each of those) creatures (?:have|has|gets?) ///Soulbond - 
+(Ferocious|Chroma|Channel|Constellation|Domain|Hellbent|Imprint|Join forces|Metalcraft|Morbid|Radiance|Threshold|Will of the council|Converge|Formidable) - ///
+you control a creature with P 4 or greater///ferocious
+Battalion - Whenever ~ and at least two other creatures attack, ///Battalion - 
+Constellation - Whenever ~ or another enchantment ETB under your control, ///Constellation - 
+to the number of basic land types among lands you control///your domain
+Fateful hour - If you have 5 or less life, ///Fateful hour - 
+Grandeur - Discard another card named ~: ///Grandeur - 
+you have no cards in hand///hellbent
+Heroic - Whenever you cast a spell that targets ~, ///Heroic - 
+Inspired - Whenever ~ becomes untapped, ///Inspired - 
+Kinship - At the beginning of your upkeep, you may look at the top card of your library. If it shares a creature type with ~, you may reveal it. If you do, ///Kinship - 
+Landfall - (?:If you had|Whenever) a land ETB under your control(?: this turn)?, ///Landfall - 
+Lieutenant - As long as you control your commander, ///Lieutenant - 
+you control 3 or more artifacts///metalcraft
+a creature died this turn///morbid
+Raid - (?:When ~ ETB, )?if you attacked with a creature this turn, ///Raid - 
+Sweep - Return any number of \w+ you control to their owner's hand. ///Sweep - 
+7 or more cards are in your graveyard///threshold
+Rally - Whenever ~ or another Ally ETB under your control, ///Rally - 
+Spell mastery - If there are 2 or more instant and/or sorcery cards in your GY, ///Spell mastery - 
+((?:draw|discard|gain|lose|deal)s? (?:[0-9]+|X)) (?:card|life|damage)s?///$1
+prevent the next ([0-9]+|X) dmg///prevent next $1
+put(s?) the top ([0-9]+|X) cards of his library into (?:his|your) graveyard///mill$1 $2
+put the top ([0-9]+|X) cards of your library into your graveyard/// "mill " + m.Groups[1].ToString() 
+return (.*?) to its owner's hand///bounce $1
+Bloodrush - (.*?), Discard ~/// Bloodrush $1
+Parley - Each player reveals the top card of his library. For each nonland card revealed this way, (.*?) Then each player draws a card.///Parley - $1
+Strive - ~ costs (.*?) more to cast for each target beyond the 1st.///Strive $1
+Tempting offer - ([^.]*?)\..*///Tempting offer - $1.
+([0-9]+|X) or (?:more|greater)///>= $1
+([0-9]+|X) or (?:less|fewer)///<= $1
+up to ([0-9]+|X)///<= $1
+more than ([0-9]+|X)///> $1
+less than ([0-9]+|X)///< $1

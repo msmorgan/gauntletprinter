@@ -98,6 +98,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Content Include="Newtonsoft.Json.dll" />
+    <Resource Include="rules.txt" />
     <Content Include="symbols\counter-charge-gray.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
