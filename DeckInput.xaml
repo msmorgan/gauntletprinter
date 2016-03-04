@@ -19,7 +19,7 @@
             <StackPanel Grid.Row="0">
                 <Label x:Name="MainboardLabel" Content="Mainboard X"/>
                 <Button x:Name="LoadFromFile" Content="Load from file"/>
-                <Button x:Name="GetFromWeb" Content="Get from web"/>
+                <Button x:Name="GetFromWeb" Content="Get from web" Click="GetFromWeb_OnClick"/>
             </StackPanel>
             <TextBox Grid.Row="1" x:Name="MainboardInput"/>
         </Grid>
