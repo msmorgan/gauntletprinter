@@ -155,7 +155,6 @@ namespace GauntletPrinter
                 allCards.AddRange(additionalCards);
 
                 // Parse the deck strings and shorten the text of cards that are included in one or more decks
-                var shortener = new CardTextShortener();
                 var decks = new List<List<Card>>();
                 var sideboards = new List<List<Card>>();
                 for (int deckNumber = 0; deckNumber < this.deckInputs.Count; deckNumber++)
@@ -170,7 +169,7 @@ namespace GauntletPrinter
 
                     foreach (var card in deck.Concat(sideboard))
                     {
-                        shortener.ProcessCard(card, this.grayscaleSymbols.IsChecked == true, this.omitTypeLineForBasics.IsChecked == true);
+                        CardTextShortener.ProcessCard(card, this.grayscaleSymbols.IsChecked == true, this.omitTypeLineForBasics.IsChecked == true);
                     }
 
                     decks.Add(deck);

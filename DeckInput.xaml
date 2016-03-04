@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="GauntletPrinter.DeckInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="632.7" d:DesignWidth="172.5">
+    
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Label x:Name="MainboardLabel" Content="Mainboard X"/>
+                <Button x:Name="LoadFromFile" Content="Load from file"/>
+                <Button x:Name="GetFromWeb" Content="Get from web"/>
+            </StackPanel>
+            <TextBox Grid.Row="1" x:Name="MainboardInput"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Label x:Name="SideboardLabel" Content="Sideboard X"/>
+            </StackPanel> 
+            <TextBox Grid.Row="1" x:Name="SideboardInput"/>
+        </Grid>
+    </Grid>
+</UserControl>
