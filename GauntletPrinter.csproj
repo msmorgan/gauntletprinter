@@ -66,6 +66,11 @@
     <Compile Include="DeckInput.xaml.cs">
       <DependentUpon>DeckInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Downloaders\BaseDownloader.cs" />
+    <Compile Include="Downloaders\DownloadResult.cs" />
+    <Compile Include="Downloaders\MtgGoldfishDownloader.cs" />
+    <Compile Include="Downloaders\MtgTop8Downloader.cs" />
+    <Compile Include="Downloaders\TappedOutDownloader.cs" />
     <Compile Include="GetFromWebDialog.xaml.cs">
       <DependentUpon>GetFromWebDialog.xaml</DependentUpon>
     </Compile>

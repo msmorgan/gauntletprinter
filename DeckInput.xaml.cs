@@ -96,7 +96,7 @@ namespace GauntletPrinter
                 return;
             }
 
-            MainboardInput.Text = dialog.MainboardString;
+            MainboardInput.Text = dialog.DeckString;
             SideboardInput.Text = dialog.SideboardString;
         }
     }

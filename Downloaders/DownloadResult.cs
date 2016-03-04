@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace GauntletPrinter.Downloaders
 {
-    public interface IDownloader
+    public class DownloadResult
     {
+        public string MainboardText { get; set; }
+        public string SideboardText { get; set; }
     }
 }

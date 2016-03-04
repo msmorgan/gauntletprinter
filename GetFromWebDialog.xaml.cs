@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GauntletPrinter.Downloaders;
 
 namespace GauntletPrinter
 {
@@ -31,213 +32,36 @@ namespace GauntletPrinter
             InitializeComponent();
         }
 
-        private void ParseGoldfishDeck(string result)
+        private readonly IList<BaseDownloader> _downloaders = new List<BaseDownloader>
         {
-            result = Regex.Replace(result, "^//.*$", "", RegexOptions.Multiline);
+            new MtgGoldfishDownloader(),
+            new MtgTop8Downloader(),
+            new TappedOutDownloader(),
 
-            var sideboardSeparatorPosition = Math.Max(
-                    result.LastIndexOf("\n\r", StringComparison.Ordinal),
-                    result.LastIndexOf("\n\n", StringComparison.Ordinal));
-
-            DeckString = result.Substring(0, sideboardSeparatorPosition).Trim();
-            if (sideboardSeparatorPosition != -1)
-            {
-                SideboardString = result.Substring(sideboardSeparatorPosition + 1).Trim();
-            }
-        }
-
-        private void ParseTop8Deck(string result)
-        {
-            DeckString = "";
-            SideboardString = "";
-
-            var deckMatches = Regex.Matches(result, @"^\s+(?<count>\d+) \[[A-Z0-9]{3}\] (?<card>.+)$", RegexOptions.Multiline);
-
-            for (int i = 0; i < deckMatches.Count; i++)
-            {
-                var name = deckMatches[i].Groups["card"].Captures[0].ToString().Trim();
-                var count = deckMatches[i].Groups["count"].Captures[0].ToString().Trim();
-
-                DeckString += count + " " + name + Environment.NewLine;
-            }
-            
-            var sideboardMatches = Regex.Matches(result, @"^SB:\s+(?<count>\d+) \[[A-Z0-9]{3}\] (?<card>.+)$", RegexOptions.Multiline);
-
-            for (int i = 0; i < sideboardMatches.Count; i++)
-            {
-                var name = sideboardMatches[i].Groups["card"].Captures[0].ToString().Trim();
-                var count = sideboardMatches[i].Groups["count"].Captures[0].ToString().Trim();
-
-                SideboardString += count + " " + name + Environment.NewLine;
-            }
-        }
-
-        private void ParseTappedOutDeck(string result)
-        {
-            var halves = result.Split(new [] {"Sideboard:"}, StringSplitOptions.None);
-
-            DeckString = halves[0].Trim().Replace("/", "//");
-            SideboardString = halves.Length > 0 ? halves[1].Trim().Replace("/", "//") : "";
-        }
+        }; 
 
         private async void Download_OnClick(object sender, RoutedEventArgs e)
         {
-            var client = new WebClient();
-
             await Task.Delay(TimeSpan.FromMilliseconds(1));
 
-            // co se sideboardy
-            download.IsEnabled = false;
-
-            try
+            var uriString = deckUrl.Text;
+            foreach (var downloader in _downloaders)
             {
-                Uri uri = new Uri(deckUrl.Text);
-                if (uri.Host == "www.mtggoldfish.com")
+                if (!downloader.CanDownload(uriString)) continue;
+
+                var downloadResult = await downloader.DownloadAsync(uriString);
+                if (downloadResult != null)
                 {
-                    var match = Regex.Match(uri.LocalPath, "/deck/([0-9]+)");
-                    if (match.Length > 0)
-                    {
-                        var id = match.Groups[1].Captures[0].ToString();
+                    DeckString = downloadResult.MainboardText;
+                    SideboardString = downloadResult.SideboardText;
 
-                        var requestUri = new Uri("http://" + uri.Host + "/deck/download/" + id + "/");
-                        string result = await client.DownloadStringTaskAsync(requestUri);
-
-                        if (!_isClosed)
-                        {
-                            ParseGoldfishDeck(result);
-
-                            DialogResult = true;
-                            Close();
-                            return;   
-                        }
-                    }
-
-                    match = Regex.Match(uri.LocalPath, "/download/([0-9]+)");
-                    if (match.Length > 0)
-                    {
-                        string result = await client.DownloadStringTaskAsync(uri);
-
-                        if (!_isClosed)
-                        {
-                            ParseGoldfishDeck(result);
-
-                            DialogResult = true;
-                            Close();
-                            return;   
-                        }
-                    }
-
-                    match = Regex.Match(uri.LocalPath, "/archetype/([A-Za-z\\-0-9]+)");
-                    if (match.Length > 0)
-                    {
-                        string result = await client.DownloadStringTaskAsync(uri);
-
-                        var bodyMatch = Regex.Match(result, "/deck/download/([0-9]+)");
-                        var id = bodyMatch.Groups[1].Captures[0].ToString();
-
-                        var requestUri = new Uri("http://" + uri.Host + "/deck/download/" + id + "/");
-                        string decklistResult = await client.DownloadStringTaskAsync(requestUri);
-
-                        if (!_isClosed)
-                        {
-                            ParseGoldfishDeck(decklistResult);
-
-                            DialogResult = true;
-                            Close();
-                            return;   
-                        }
-                    }
-
-                    if (!_isClosed)
-                    {
-                        MessageBox.Show("Incorrect deck URL.");   
-                    }
-                }
-                else if (uri.Host == "www.mtgtop8.com")
-                {
-                    var match = Regex.Match(uri.LocalPath, "/event");
-                    if (match.Length > 0)
-                    {
-
-                        var parsedQueryString = System.Web.HttpUtility.ParseQueryString(uri.Query);
-                        var id = parsedQueryString["d"];
-
-                        if (id != null)
-                        {
-                            var requestUri = new Uri("http://www.mtgtop8.com/export_files/deck" + id + ".mwDeck");
-                            string result = await client.DownloadStringTaskAsync(requestUri);
-
-                            if (!_isClosed)
-                            {
-                                ParseTop8Deck(result);
-
-                                DialogResult = true;
-                                Close();
-                                return;   
-                            }
-                        }
-                    }
-
-                    match = Regex.Match(uri.LocalPath, "/export_files/deck([0-9]+).mwDeck");
-                    if (match.Length > 0)
-                    {
-                        string result = await client.DownloadStringTaskAsync(uri);
-
-                        if (!_isClosed)
-                        {
-                            ParseTop8Deck(result);
-
-                            DialogResult = true;
-                            Close();
-                            return;
-                        }
-                    }
-
-                    if (!_isClosed)
-                    {
-                        MessageBox.Show("Incorrect deck URL.");   
-                    }
-                }
-                else if (uri.Host == "tappedout.net")
-                {
-                    var match = Regex.Match(uri.LocalPath, "/mtg-decks/([a-zA-Z0-9\\-]+)/");
-                    if (match.Length > 0)
-                    {
-                        var requestUri = new Uri("http://www.tappedout.net/mtg-decks/" + match.Groups[1].Captures[0].ToString() + "/?fmt=txt");
-                        string result = await client.DownloadStringTaskAsync(requestUri);
-
-                        if (!_isClosed)
-                        {
-                            ParseTappedOutDeck(result);
-
-                            DialogResult = true;
-                            Close();
-                            return;   
-                        }
-                    }
-
-                    MessageBox.Show("Incorrect deck URL.");
-                }
-                else
-                {
-                    MessageBox.Show("Unsupported website.");
+                    DialogResult = true;
+                    Close();
+                    return;
                 }
             }
-            catch (WebException ex)
-            {
-                if (!_isClosed)
-                {
-                    MessageBox.Show(
-                    "Could not download the page from the web. This may mean the URL is not correct or that your computer is not connected to the internet.\n\nMessage: " + ex.Message);   
-                }
-            }
-            catch (Exception ex)
-            {
-                if (!_isClosed)
-                {
-                    MessageBox.Show(ex.ToString());   
-                }
-            }
+
+            MessageBox.Show("Unsupported website.");
 
             download.IsEnabled = true;
         }
@@ -247,7 +71,7 @@ namespace GauntletPrinter
             deckUrl.Focus();
         }
 
-        private async void DeckUrl_OnKeyDown(object sender, KeyEventArgs e)
+        private void DeckUrl_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
